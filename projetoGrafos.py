@@ -23,18 +23,14 @@ class GrafoMatriz:
   def adicionarVertices(self, vertices):
     self.vertices = vertices
 
-  def __adicionarArestas(self, aresta):
-    self.matriz[aresta.vertice1.index][aresta.vertice2.index] += 1
-    self.matriz[aresta.vertice2.index][aresta.vertice1.index] += 1
-
   def criarAresta(self, indexVertice1, indexVertice2):
-    v1 = self.vertices[indexVertice1]
-    v2 = self.vertices[indexVertice2]
-    aresta = Aresta(v1, v2)
-    self.__adicionarArestas(aresta)
+    self.vertices[indexVertice1]
+    self.vertices[indexVertice2]
+    self.matriz[indexVertice1][indexVertice2] += 1
+    self.matriz[indexVertice2][indexVertice1] += 1
 
-  def removerArestas(self, aresta):
-    endeco = self.matriz[aresta.vertice1.index][aresta.vertice2.index]
+  def removerArestas(self, indexVertice1, indexVertice2):
+    endeco = self.matriz[indexVertice1][indexVertice2]
     if(endeco):
       self.matriz[aresta.vertice1.index][aresta.vertice2.index] -= 1
       self.matriz[aresta.vertice2.index][aresta.vertice1.index] -= 1
