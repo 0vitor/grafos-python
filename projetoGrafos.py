@@ -1,7 +1,7 @@
 class Vertice:
   def __init__(self, valor, index):
+    self.valor = valor
     self.index = index
-    #self.vizinhos = []
 
 class Aresta:
   def __init__(self, vertice1, vertice2):
@@ -11,8 +11,7 @@ class Aresta:
 class GrafoMatriz:
   def __init__(self, tamanhoMax):
     self.tamanho = tamanhoMax
-    self.linha = []
-    self.coluna = []
+    self.vertices = []
     self.matriz = self.__iniciarMatriz()
 
   def __iniciarMatriz(self):
@@ -21,9 +20,18 @@ class GrafoMatriz:
         matriz.append([0]*self.tamanho)
     return matriz
 
-  def adicionarArestas(self, aresta):
+  def adicionarVertices(self, vertices):
+    self.vertices = vertices
+
+  def __adicionarArestas(self, aresta):
     self.matriz[aresta.vertice1.index][aresta.vertice2.index] += 1
     self.matriz[aresta.vertice2.index][aresta.vertice1.index] += 1
+
+  def criarAresta(self, indexVertice1, indexVertice2):
+    v1 = self.vertices[indexVertice1]
+    v2 = self.vertices[indexVertice2]
+    aresta = Aresta(v1, v2)
+    self.__adicionarArestas(aresta)
 
   def removerArestas(self, aresta):
     endeco = self.matriz[aresta.vertice1.index][aresta.vertice2.index]
@@ -68,8 +76,24 @@ class GrafoMatriz:
 """     def criarLigacao(v1, v2):
  """
 def main():
-  i = GrafoMatriz(3)
-  i.imprimirGrafo()
+  v1 = Vertice("vertice1", 0)
+  v2 = Vertice("vertice2", 1)
+  v3 = Vertice("vertice3", 2)
+  v4 = Vertice("vertice4", 3)
+  a1 = Aresta(v1, v2)
+  a2 = Aresta(v3, v4)
+  """ v0 v1
+  v0[ 0   0  ]
+  vi[ 0   0  ]
+
+  """
+
+  grafo = GrafoMatriz(4)
+  grafo.adicionarVertices([v1, v2, v3, v4])
+  grafo.criarAresta(0, 1)
+  grafo.criarAresta(2, 3)
+  grafo.imprimirGrafo()
+
   return
 main()
 """ class Client:
