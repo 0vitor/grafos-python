@@ -1,20 +1,21 @@
 class Vertice:
-    def __init__(self, valor, index):
-        self.index = index
-        self.vizinhos = []
+  def __init__(self, valor, index):
+    self.index = index
+    #self.vizinhos = []
 
 class Aresta:
     def __init__(self, vertice1, vertice2):
         self.vertice1 = vertice1
         self.vertice2 = vertice2
 
-class GrafroMatriz:
-    def __init__(self, tamanho):
-        self.tamanhoMax = tamanho
-        self.linha = []
-        self.coluna = []
-        self.matriz = []
-
+class GrafoMatriz:
+  def __init__(self, tamanhoMax):
+    self.tamanho = tamanhoMax
+    self.linha = []
+    self.coluna = []
+    self.matriz = []
+    self.iniciarMatriz()
+    
     def __inicarMatriz(self):
         coluna = []
         for _ in range(self.tamanho):
@@ -47,13 +48,13 @@ class GrafroMatriz:
             contadorDeVertices += valor
 
         return contadorDeVertices
+    
+    def calcularGrau(self):
+    contadorDeVertices = 0
+    for idx in range(self.tamanho):
+      contadorDeVertices += self.calcularGrauVertice(idx)
 
-    """ def calcularGrau(self):
-        contadorDeVertices = 0
-        for _ in range(self.tamanho):
-            self.calcularGrauVertice()
-            contadorDeVertices += valor
-        return contadorDeVertices """
+    return contadorDeVertices
 
     def eVizinho(self, vertice1, vertice2):
         endeco = self.matriz[vertice1.index][vertice2.index]
@@ -61,9 +62,20 @@ class GrafroMatriz:
             return True
         return False
 
-    """ def imprimirGrafo():
-        print(self.tamanho)
- """
+  def imprimirGrafo(self):
+    #Número de vertices e arestas
+    print("Número Vertices: {}".format(self.tamanho))
+    print("Número Arestas: {}".format((self.calcularGrau()) / 2))
+    #Podem se tornar funções,  listar arestas e grau de cada vertice
+    print("Matriz Adjacencia: ")
+    for x in range(self.tamanho):
+        linha = self.matriz[x]
+        for valor in linha:
+            print("{}   ".format(valor), end="")
+        print("\n")
+    #
+    for x in range(self.tamanho):
+        print("Vertice {}: {}".format(x, self.calcularGrauVertice(x)))
 
 """     def criarLigacao(v1, v2):
  """
