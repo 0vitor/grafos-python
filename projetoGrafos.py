@@ -21,12 +21,6 @@ class GrafoMatriz:
         matriz.append([0]*self.tamanho)
     return matriz
 
-  def criarColuna(self):
-    for _ in range(self.tamanho):
-        for _ in range(self.tamanho):
-            self.coluna.append(self.vertice)
-        self.matriz.append(self.coluna)
-
   def adicionarArestas(self, aresta):
     self.matriz[aresta.vertice1.index][aresta.vertice2.index] += 1
     self.matriz[aresta.vertice2.index][aresta.vertice1.index] += 1
@@ -43,7 +37,6 @@ class GrafoMatriz:
     for valor in linha:
       contadorDeVertices += valor
     return contadorDeVertices
-
 
   def calcularGrau(self):
     contadorDeVertices = 0
