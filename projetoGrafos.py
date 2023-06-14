@@ -32,8 +32,8 @@ class GrafoMatriz:
   def removerArestas(self, indexVertice1, indexVertice2):
     endeco = self.matriz[indexVertice1][indexVertice2]
     if(endeco):
-      self.matriz[aresta.vertice1.index][aresta.vertice2.index] -= 1
-      self.matriz[aresta.vertice2.index][aresta.vertice1.index] -= 1
+      self.matriz[indexVertice1][indexVertice2] -= 1
+      self.matriz[indexVertice2][indexVertice1] -= 1
 
   def calcularGrauVertice(self, verticeIndex):
     linha = self.matriz[verticeIndex]
@@ -72,12 +72,10 @@ class GrafoMatriz:
 """     def criarLigacao(v1, v2):
  """
 def main():
-  v1 = Vertice("vertice1", 0)
-  v2 = Vertice("vertice2", 1)
-  v3 = Vertice("vertice3", 2)
-  v4 = Vertice("vertice4", 3)
-  a1 = Aresta(v1, v2)
-  a2 = Aresta(v3, v4)
+  v0 = Vertice("vertice1", 0)
+  v1 = Vertice("vertice2", 1)
+  v2 = Vertice("vertice3", 2)
+  v3 = Vertice("vertice4", 3)
   """ v0 v1
   v0[ 0   0  ]
   vi[ 0   0  ]
@@ -85,9 +83,11 @@ def main():
   """
 
   grafo = GrafoMatriz(4)
-  grafo.adicionarVertices([v1, v2, v3, v4])
+  grafo.adicionarVertices([v0, v1, v2, v3])
   grafo.criarAresta(0, 1)
   grafo.criarAresta(2, 3)
+  grafo.criarAresta(1, 3)
+  grafo.removerArestas(0, 1)
   grafo.imprimirGrafo()
 
   return
