@@ -13,16 +13,13 @@ class GrafoMatriz:
     self.tamanho = tamanhoMax
     self.linha = []
     self.coluna = []
-    self.matriz = []
-    self.iniciarMatriz()
+    self.matriz = self.__iniciarMatriz()
 
-
-  def __inicarMatriz(self):
-    coluna = []
+  def __iniciarMatriz(self):
+    matriz = []
     for _ in range(self.tamanho):
-            coluna.append(0)
-    for _ in range(self.tamanho):
-        self.matriz.append(coluna)
+        matriz.append([0]*self.tamanho)
+    return matriz
 
   def criarColuna(self):
     for _ in range(self.tamanho):
@@ -63,7 +60,7 @@ class GrafoMatriz:
   def imprimirGrafo(self):
     #Número de vertices e arestas
     print("Número Vertices: {}".format(self.tamanho))
-    print("Número Arestas: {}".format((self.calcularGrau()) / 2))
+    print("Número Arestas: {}".format((self.calcularGrau()) // 2))
     #Podem se tornar funções,  listar arestas e grau de cada vertice
     print("Matriz Adjacencia: ")
     for x in range(self.tamanho):
@@ -78,8 +75,10 @@ class GrafoMatriz:
 """     def criarLigacao(v1, v2):
  """
 def main():
+  i = GrafoMatriz(3)
+  i.imprimirGrafo()
   return
-
+main()
 """ class Client:
     def criarGrafo(tipoDeEstrutura, tamanho):
         if(tipoDeEstrutura == 'EA'):
