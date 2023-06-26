@@ -52,7 +52,7 @@ class GrafoEstrutura:
 
       primeiro = self.estrutura[0].vertice
       ultimo = self.estrutura[tamanho-1].vertice
-      self.__adicionarNo(primeiro, ultimo)
+      self.__adicionarNo(ultimo, primeiro)
       grau -= 1
 
   def regularImpar(self, tamanho):
