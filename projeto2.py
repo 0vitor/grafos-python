@@ -4,30 +4,27 @@ class No:
     self.vertice = vertice
     self.prox = prox
 
-
 class Vertice:
   def __init__(self, valor, index):
     self.valor = valor
     self.index = index
-
 
 class Aresta:
   def __init__(self, vertice1, vertice2):
     self.vertice1 = vertice1
     self.vertice2 = vertice2
 
-
 class GrafoEstrutura:
   def __init__(self):
     self.estrutura = []
 
-  def ligarVertices(self):
+  def criarGrafoCompleto(self):
     for i in range(len(self.estrutura)):
       for j in range(len(self.estrutura)):
         if(self.estrutura[i] != self.estrutura[j]):
-          self.__adicionarNo(self.estrutura[i].vertice, self.estrutura[j].vertice)
+          self.criarArestaUnidirecional(self.estrutura[i].vertice, self.estrutura[j].vertice)
 
-  def criarGrafoKn(self, n):
+  def criarVertices(self, n):
     for i in range(n):
       vertice = Vertice(f'v{i}', i)
       verticeNo = No(vertice)
@@ -37,61 +34,61 @@ class GrafoEstrutura:
     for vertice in vertices:
       self.estrutura.append(No(vertice))
 
-  def adicionarNo(self, vertice, verticeAdicionado):
+  def criarArestaUnidirecional(self, vertice, verticeAdicionado):
     VerticeNo = self.estrutura[vertice.index]
     while VerticeNo.prox:
       VerticeNo = VerticeNo.prox
     VerticeNo.prox = No(verticeAdicionado)
 
-  def regularPar(self, tamanho, grau):
-    while grau:
+  def criarGrafoRegularPar(self, tamanho, grau):
+    ia = grau//2
+    while ia:
       for i in range(tamanho-1):
-        verticeNo1 =  self.estrutura[i]
-        verticeNo2 =  self.estrutura[i+1]
-        self.__adicionarNo(verticeNo1.vertice, verticeNo2.vertice)
+        verticeNo1 = self.estrutura[i]
+        verticeNo2 = self.estrutura[i+1]
+        self.criarAresta(verticeNo1.vertice, verticeNo2.vertice)
 
       primeiro = self.estrutura[0].vertice
       ultimo = self.estrutura[tamanho-1].vertice
-      self.__adicionarNo(ultimo, primeiro)
-      grau -= 1
+      self.criarAresta(ultimo, primeiro)
+      ia -= 1
 
-  def regularImpar(self, tamanho):
+  def transformarGrafoRegularImpar(self, tamanho):
     for i in range(0, tamanho, 2):
       print(i)
       verticeNo1 =  self.estrutura[i].vertice
       verticeNo2 =  self.estrutura[i+1].vertice
       self.criarAresta(verticeNo1, verticeNo2)
 
-  def criarGradoKReg(self, tamanho, grau):
-    self.criarGrafoKn(tamanho)
+  def criarGrafoKReg(self, tamanho, grau):
+    self.criarVertices(tamanho)
     if grau % 2 == 0:
-      self.regularPar(tamanho, grau)
+      self.criarGrafoRegularPar(tamanho, grau)
     elif tamanho % 2 == 1:
       print("não vai da não")
     elif tamanho % 2 == 0:
-      self.regularPar(tamanho, grau-1)
-      self.regularImpar(tamanho)
+      self.criarGrafoRegularPar(tamanho, grau-1)
+      self.transformarGrafoRegularImpar(tamanho)
 
-  def verificarBipartidoCompleto(self, vertices1, vertices2):
-    for i in range(len(vertices1) - 1):
-      if self.eVizinho(vertices1[i], vertices1[i+1]):
-        return False
+  def verificarBipartido(self, vertices1, vertices2):
+    interccao = vertices1 & vertices2
+    if interccao:
+      return False
 
-    for i in range(len(vertices2) - 1):
-      if self.eVizinho(vertices2[i], vertices2[i+1]):
-        return False
-
-    for v in vertices1:
-      for v2 in vertices2:
-        if not self.eVizinho(v, v2):
+    for v1 in vertices1:
+      for v2 in vertices1:
+        if self.saoVizinho(v1, v2):
           return False
 
-    return True
+    for v1 in vertices2:
+      for v2 in vertices2:
+        if self.saoVizinho(v1, v2):
+          return False
 
   def criarAresta(self, v1, v2):
-    self.adicionarNo(v1, v2)
+    self.criarArestaUnidirecional(v1, v2)
     if v1 != v2:
-      self.adicionarNo(v2, v1)
+      self.criarArestaUnidirecional(v2, v1)
 
   def __removerNo(self, v1, v2):
     # Caso em que nó é nulo
@@ -117,11 +114,11 @@ class GrafoEstrutura:
 
   def calcularGrauVertice(self, vertice):
     vizinho = self.estrutura[vertice.index].prox
-    contadorDeVizinhos = 0
+    contadorDsaoVizinhos = 0
     while vizinho != None:
-      contadorDeVizinhos += 1
+      contadorDsaoVizinhos += 1
       vizinho = vizinho.prox
-    return contadorDeVizinhos
+    return contadorDsaoVizinhos
 
   def calcularGrauGrafo(self):
     graus = 0
@@ -139,8 +136,8 @@ class GrafoEstrutura:
       if auxElementNo.vertice != -1:
         print("No {}".format(auxElementNo.vertice.index))
 
-  def eVizinho(self, v1, v2):
-    verticeNo = self.estrutura[v1.index]
+  def saoVizinho(self, v1, v2):
+    verticeNo = self.estrutura[v1.index].prox
     while verticeNo != None:
       if verticeNo.vertice == v2:
         return True
@@ -148,13 +145,10 @@ class GrafoEstrutura:
     return False
 
   def imprimirGrafo(self):
-    # Número de vertices e arestas
     print("Número Vertices: {}".format(len(self.estrutura)))
     print("Número Arestas: {}".format((self.calcularGrauGrafo()) // 2))
     print("Grau do grafo: {}\n".format((self.calcularGrauGrafo())))
-    # Listar arestas
     self.imprimirEA()
-    # Listar grau de cada vertice
     print("\nVertices e seus Graus: ")
     for verticeNo in self.estrutura:
       index = verticeNo.vertice.index
@@ -163,18 +157,6 @@ class GrafoEstrutura:
           index + 1, self.calcularGrauVertice(verticeNo.vertice)
         )
       )
-def atividade2_1(n):
-  n = 5
-  grafo = GrafoEstrutura()
-  grafo.criarGrafoKn(n)
-  grafo.ligarVertices()
-  grafo.imprimirEA()
-
-def caso1(verticePar, grauPar):
-  # se o numero de vertices for impar e o graus for par então eu ligo um atras do outro
-  grafo = GrafoEstrutura()
-  grafo.criarGradoKReg(verticePar, grauPar)
-  grafo.imprimirEA()
 
 def criarGrafoBipartido():
   grafo = GrafoEstrutura()
@@ -185,30 +167,27 @@ def criarGrafoBipartido():
   v5 = Vertice("v5", 4)
 
   grafo.adicionarVertices([v1, v2, v3, v4, v5])
-  grafo.adicionarNo(v1,v3)
-  grafo.adicionarNo(v1,v4)
-  grafo.adicionarNo(v1,v5)
+  grafo.criarArestaUnidirecional(v1,v3)
+  grafo.criarArestaUnidirecional(v1,v4)
+  grafo.criarArestaUnidirecional(v1,v5)
 
-  grafo.adicionarNo(v2,v3)
-  grafo.adicionarNo(v2,v4)
-  grafo.adicionarNo(v2,v5)
+  grafo.criarArestaUnidirecional(v2,v3)
+  grafo.criarArestaUnidirecional(v2,v4)
+  grafo.criarArestaUnidirecional(v2,v5)
 
-  grafo.adicionarNo(v3,v1)
-  grafo.adicionarNo(v3,v2)
+  grafo.criarArestaUnidirecional(v3,v1)
+  grafo.criarArestaUnidirecional(v3,v2)
 
-  grafo.adicionarNo(v4,v1)
-  grafo.adicionarNo(v4,v2)
+  grafo.criarArestaUnidirecional(v4,v1)
+  grafo.criarArestaUnidirecional(v4,v2)
 
-  grafo.adicionarNo(v5,v1)
-  grafo.adicionarNo(v5,v2)
+  grafo.criarArestaUnidirecional(v5,v1)
+  grafo.criarArestaUnidirecional(v5,v2)
   grafo.imprimirGrafo()
-  #print(grafo.verificarBipartidoCompleto([v1, v2], [v3, v4, v5]))
-
+  print(grafo.verificarBipartido({v1, v2}, {v3, v4, v5}))
 
 def main():
-  grafo = GrafoEstrutura()
+  #grafo = GrafoEstrutura()
   criarGrafoBipartido()
 
 main()
-# se o numero de vertices for par e os graus forem pares então liga um atras do outro
-# se o numeor de vertices for par e os graus forem impares ligue e pule

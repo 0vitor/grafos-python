@@ -1,24 +1,20 @@
 import tkinter as tk
 
-
 class No:
   def __init__(self, vertice, prox=None):
     # O atributo vertice, por agora, armazena index
     self.vertice = vertice
     self.prox = prox
 
-
 class Vertice:
   def __init__(self, valor, index):
     self.valor = valor
     self.index = index
 
-
 class Aresta:
   def __init__(self, vertice1, vertice2):
     self.vertice1 = vertice1
     self.vertice2 = vertice2
-
 
 class GrafoEstrutura:
   def __init__(self):
@@ -35,17 +31,12 @@ class GrafoEstrutura:
     VerticeNo.prox = No(verticeAdicionado)
 
   def criarAresta(self, v1, v2):
-    # Restrição para o laço
     self.__adicionarNo(v1, v2)
-    if v1 != v2:
-      self.__adicionarNo(v2, v1)
+    self.__adicionarNo(v2, v1)
 
   def __removerNo(self, v1, v2):
-    # Caso em que nó é nulo
-    # Verifica primeiro nó
     if self.estrutura[v1.index].vertice == v2:
       self.estrutura[v1.index].prox = self.estrutura[v1.index].prox
-    # Demais nós
     else:
       anterior = None
       atual = self.estrutura[v1.index]
@@ -59,8 +50,7 @@ class GrafoEstrutura:
 
   def removerAresta(self, v1, v2):
     self.__removerNo(v1, v2)
-    if v1 != v2:
-      self.__removerNo(v2, v1)
+    self.__removerNo(v2, v1)
 
   def calcularGrauVertice(self, vertice):
     vizinho = self.estrutura[vertice.index].prox
@@ -86,8 +76,8 @@ class GrafoEstrutura:
       if auxElementNo.vertice != -1:
         print("No {}".format(auxElementNo.vertice.index))
 
-  def eVizinho(self, v1, v2):
-    verticeNo = self.estrutura[v1.index]
+  def saoVizinho(self, v1, v2):
+    verticeNo = self.estrutura[v1.index].prox
     while verticeNo != None:
       if verticeNo.vertice == v2:
         return True
@@ -110,75 +100,7 @@ class GrafoEstrutura:
         )
       )
 
-
-def exemploGrafo1():
-  grafo = GrafoEstrutura()
-  v0 = Vertice("vertice1", 0)
-  v1 = Vertice("vertice2", 1)
-  v2 = Vertice("vertice3", 2)
-  v3 = Vertice("vertice4", 3)
-  v4 = Vertice("vertice5", 4)
-  grafo.adicionarVertices([v0, v1, v2, v3, v4])
-  grafo.criarAresta(v0, v1)
-  grafo.criarAresta(v1, v2)
-  grafo.criarAresta(v1, v3)
-  grafo.criarAresta(v1, v4)
-  grafo.criarAresta(v1, v4)
-  grafo.criarAresta(v2, v2)
-  grafo.criarAresta(v2, v3)
-  grafo.criarAresta(v3, v4)
-  grafo.imprimirGrafo()
-  GraphDrawer(grafo.estrutura)
-
-
-def exemploGrafo2():
-  grafo = GrafoEstrutura()
-  v0 = Vertice("vertice1", 0)
-  v1 = Vertice("vertice2", 1)
-  v2 = Vertice("vertice3", 2)
-  v3 = Vertice("vertice4", 3)
-  v4 = Vertice("vertice5", 4)
-  grafo.adicionarVertices([v0, v1, v2, v3, v4])
-  grafo.criarAresta(v0, v1)
-  grafo.criarAresta(v0, v2)
-  grafo.criarAresta(v0, v3)
-  grafo.criarAresta(v0, v4)
-  grafo.criarAresta(v1, v2)
-  grafo.criarAresta(v1, v3)
-  grafo.criarAresta(v1, v4)
-  grafo.criarAresta(v2, v3)
-  grafo.criarAresta(v2, v4)
-  grafo.criarAresta(v3, v4)
-
-  grafo.imprimirGrafo()
-  GraphDrawer(grafo.estrutura)
-
-
-def teste():
-  grafo = GrafoEstrutura()
-  v0 = Vertice("vertice1", 0)
-  v1 = Vertice("vertice2", 1)
-  v2 = Vertice("vertice3", 2)
-  v3 = Vertice("vertice4", 3)
-  v4 = Vertice("vertice5", 4)
-  v5 = Vertice("vertice6", 5)
-
-  vertices = [v0, v1, v2, v3]
-  extraVertices = [v4, v5]
-
-  grafo.adicionarVertices(vertices)
-  grafo.criarAresta(v0, v1)
-  grafo.criarAresta(v1, v2)
-  # grafo.criarAresta(1,1)
-  grafo.criarAresta(v1, v3)
-  # grafo.imprimirGrafo()
-
-  grafo.adicionarVertices(extraVertices)
-  grafo.imprimirEA()
-  # print("Situação: {}".format(grafo.eVizinho(1,4)))
-
-
-class GraphDrawer:
+class GraphDrawerEA:
   def __init__(self, estruturaAdj):
     self.estruturaAdj = estruturaAdj
     self.verticesRepetidos = []
@@ -187,10 +109,10 @@ class GraphDrawer:
     self.window = tk.Tk()
     self.canvas = tk.Canvas(self.window, width=800, height=600)
     self.canvas.pack()
-    self.canvas.bind("<Button-1>", self.add_vertex)
+    self.canvas.bind("<Button-1>", self.adicionarVertices)
     self.window.mainloop()
 
-  def add_vertex(self, event):
+  def adicionarVertices(self, event):
     if len(self.vertices) < len(self.estruturaAdj):
       x, y = event.x, event.y
       self.vertices.append((x, y))
@@ -198,7 +120,7 @@ class GraphDrawer:
       self.canvas.create_text(x, y - 20, text=f"Vertex {len(self.vertices)}")
     if len(self.vertices) > len(self.estruturaAdj) - 1 and self.draw:
       self.draw = 0
-      self.draw_edges()
+      self.desenharArestas()
 
   def verificarRepetidos(self, verticeIndex):
     if not (verticeIndex in self.verticesRepetidos):
@@ -207,37 +129,29 @@ class GraphDrawer:
     else:
       return True
 
-  def draw_edges(self):
+  def desenharArestas(self):
     self.canvas.delete("edge")
     for i in range(len(self.estruturaAdj)):
       verticeNo = self.estruturaAdj[i].prox
       curvatura = 7
+      loops = 0
       while verticeNo != None:
         x1, y1 = self.vertices[i]
         x2, y2 = self.vertices[verticeNo.vertice.index]
 
         if self.vertices[i] == self.vertices[verticeNo.vertice.index]:
-          self.canvas.create_oval(
-            x1 - 20, y1 - 30, x1 + 20, y1, outline="black", tags="edge"
-          )
-
+          loops += 1
+          x3 = x1
+          y3 = y1
         if self.verificarRepetidos(verticeNo.vertice.index):
           cx = (x1 + x2) / 2
           cy = (y1 + y2) / 2 - curvatura
           self.canvas.create_line(x1, y1, cx, cy, fill="black", tags="edge")
-
           curvatura += 7
-
         else:
           self.canvas.create_line(x1, y1, x2, y2, fill="black", tags="edge")
         verticeNo = verticeNo.prox
+      if(loops):
+        self.canvas.create_text(x3, y3 - 50, text=str(loops//2) + " laços", fill="black")
+        self.canvas.create_arc(x3-10, y3-30, x3+10, y3, start=270, extent=359, style=tk.ARC)
       self.verticesRepetidos = []
-
-
-def main():
-  # teste()
-  exemploGrafo1()
-  #exemploGrafo2()
-
-
-main()
