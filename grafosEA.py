@@ -2,7 +2,6 @@ import tkinter as tk
 
 class No:
   def __init__(self, vertice, prox=None):
-    # O atributo vertice, por agora, armazena index
     self.vertice = vertice
     self.prox = prox
 
@@ -86,19 +85,20 @@ class GrafoEstrutura:
 
   def imprimirGrafo(self):
     # Número de vertices e arestas
-    print("Número Vertices: {}".format(len(self.estrutura)))
+    print("Número Vértices: {}".format(len(self.estrutura)))
     print("Número Arestas: {}\n".format((self.calcularGrauGrafo()) // 2))
     # Listar arestas
     self.imprimirEA()
     # Listar grau de cada vertice
-    print("\nVertices e seus Graus: ")
+    print("\nVértices e seus Graus: ")
     for verticeNo in self.estrutura:
       index = verticeNo.vertice.index
       print(
-        "Vertice {}: {}".format(
+        "Vértice {}: {}".format(
           index + 1, self.calcularGrauVertice(verticeNo.vertice)
         )
       )
+    print("--------------------------------")
 
 class GraphDrawerEA:
   def __init__(self, estruturaAdj):
