@@ -1,11 +1,5 @@
 import tkinter as tk
 
-class No:
-  def __init__(self, vertice, prox=None):
-    # O atributo vertice, por agora, armazena index
-    self.vertice = vertice
-    self.prox = prox
-
 class Vertice:
   def __init__(self, valor, index):
     self.valor = valor
@@ -58,17 +52,18 @@ class GrafoMatriz:
     return False
 
   def imprimirGrafo(self):
-    print("Número Vertices: {}".format(len(self.vertices)))
+    print("Número Vértices: {}".format(len(self.vertices)))
     print("Número Arestas: {}".format((self.calcularGrauGrafo()) // 2))
-    print("Matriz Adjacencia: ")
+    print("Matriz Adjacência: ")
     for x in range(len(self.vertices)):
       linha = self.matriz[x]
       for valor in linha:
           print("{}   ".format(valor), end="")
       print("\n")
-
+      
+    print("Vértices e seus Graus: ")
     for x in range(len(self.vertices)):
-      print("Vertice {}: {}".format(x+1, self.calcularGrauVertice(x)))
+      print("Vértice {}: {}".format(x+1, self.calcularGrauVertice(x)))
     print("--------------------------------")
 
 class GraphDrawerMA:
@@ -111,4 +106,3 @@ class GraphDrawerMA:
               self.canvas.create_line(x1, y1, x2, y2, fill='black')
             else:
               self.canvas.create_line(x1, y1, x2, y2, fill='black')
-
