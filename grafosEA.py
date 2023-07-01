@@ -75,7 +75,7 @@ class GrafoEstrutura:
       if auxElementNo.vertice != -1:
         print("No {}".format(auxElementNo.vertice.index))
 
-  def saoVizinho(self, v1, v2):
+  def saoVizinhos(self, v1, v2):
     verticeNo = self.estrutura[v1.index].prox
     while verticeNo != None:
       if verticeNo.vertice == v2:
