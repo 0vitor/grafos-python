@@ -26,7 +26,7 @@ class GrafoMatriz:
     self.matriz[indexVertice1][indexVertice2] += 1
     self.matriz[indexVertice2][indexVertice1] += 1
 
-  def removerArestas(self, indexVertice1, indexVertice2):
+  def removerAresta(self, indexVertice1, indexVertice2):
     endeco = self.matriz[indexVertice1][indexVertice2]
     if(endeco):
       self.matriz[indexVertice1][indexVertice2] -= 1
@@ -45,7 +45,7 @@ class GrafoMatriz:
       contadorDeVertices += self.calcularGrauVertice(i)
     return contadorDeVertices
 
-  def saoVizinho(self, indexVertice1, indexVertice2):
+  def saoVizinhos(self, indexVertice1, indexVertice2):
     endeco = self.matriz[indexVertice1][indexVertice2]
     if(endeco):
       return True
@@ -54,7 +54,7 @@ class GrafoMatriz:
   def imprimirGrafo(self):
     print("Número Vértices: {}".format(len(self.vertices)))
     print("Número Arestas: {}".format((self.calcularGrauGrafo()) // 2))
-    print("Matriz Adjacência: ")
+    print("\nMatriz Adjacência: ")
     for x in range(len(self.vertices)):
       linha = self.matriz[x]
       for valor in linha:
