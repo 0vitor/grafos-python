@@ -1,8 +1,7 @@
-from grafosEA import Vertice, GrafoEstrutura
-from grafosMA import Vertice, GrafoMatriz
+from grafos import *
 
 def exemploGrafo1EA():
-  grafo = GrafoEstrutura()
+  grafo = Grafo("EA")
   v0 = Vertice("vertice1", 0)
   v1 = Vertice("vertice2", 1)
   v2 = Vertice("vertice3", 2)
@@ -21,7 +20,7 @@ def exemploGrafo1EA():
   return grafo
 
 def exemploGrafo1MA():
-  grafo = GrafoMatriz()
+  grafo = Grafo("MA")
   v1 = Vertice("vertice1", 0)
   v2 = Vertice("vertice2", 1)
   v3 = Vertice("vertice3", 2)
@@ -40,7 +39,7 @@ def exemploGrafo1MA():
   return grafo
 
 def exemploGrafo2EA():
-  grafo = GrafoEstrutura()
+  grafo = Grafo("EA")
   v0 = Vertice("vertice1", 0)
   v1 = Vertice("vertice2", 1)
   v2 = Vertice("vertice3", 2)
@@ -61,7 +60,7 @@ def exemploGrafo2EA():
   return grafo
 
 def exemploGrafo2MA():
-  grafo = GrafoMatriz()
+  grafo = Grafo("MA")
   v1 = Vertice("vertice1", 0)
   v2 = Vertice("vertice2", 1)
   v3 = Vertice("vertice3", 2)
@@ -72,15 +71,47 @@ def exemploGrafo2MA():
 
   for n in vertices:
     for x in vertices:
-      if grafo.saoVizinho(n.index, x.index) or n.index == x.index:
+      if grafo.saoVizinhos(n.index, x.index) or n.index == x.index:
         continue
       grafo.criarAresta(n.index,x.index)
 
   grafo.imprimirGrafo()
   return grafo
 
-def teste():
-  grafo = GrafoMatriz()
+def testeEstrutura():
+  #Teste utilizando todas as funções geradas pelo exercício
+  grafo = Grafo("EA")
+  v1 = Vertice("vertice1", 0)
+  v2 = Vertice("vertice2", 1)
+  v3 = Vertice("vertice3", 2)
+  v4 = Vertice("vertice4", 3)
+  v5 = Vertice("vertice5", 4)
+  grafo.adicionarVertices([ v1, v2, v3, v4, v5 ])
+  grafo.criarAresta(v1,v2)
+  grafo.criarAresta(v2,v3)
+  grafo.criarAresta(v2,v4)
+  grafo.criarAresta(v2,v5)
+  grafo.criarAresta(v3,v3)
+  grafo.criarAresta(v3,v3)
+  grafo.criarAresta(v3,v4)
+  grafo.criarAresta(v4,v5)
+  print("PÓS ADIÇÃO:")
+  grafo.imprimirGrafo()
+
+  grafo.removerAresta(v2,v5)
+  grafo.removerAresta(v3,v3)
+  print("PÓS REMOÇÃO:")
+  grafo.imprimirGrafo()
+  
+  print("SÃO VIZINHOS:")
+  print('(v2,v3): {}'.format(grafo.saoVizinhos(v2,v3)))
+  print('(v2,v5): {}'.format(grafo.saoVizinhos(v2,v5)))
+  print("--------------------------------\n")
+  return grafo
+
+def testeMatriz():
+  #Teste utilizando todas as funções geradas pelo exercício
+  grafo = Grafo("MA")
   v1 = Vertice("vertice1", 0)
   v2 = Vertice("vertice2", 1)
   v3 = Vertice("vertice3", 2)
@@ -91,11 +122,20 @@ def teste():
   grafo.criarAresta(1,2)
   grafo.criarAresta(1,3)
   grafo.criarAresta(1,4)
-  grafo.criarAresta(1,4)
   grafo.criarAresta(2,2)
   grafo.criarAresta(2,2)
   grafo.criarAresta(2,3)
   grafo.criarAresta(3,4)
-  grafo.removerArestas(1,4)
-  grafo.removerArestas(2,2)
+  print("PÓS ADIÇÃO:")
   grafo.imprimirGrafo()
+
+  grafo.removerAresta(1,4)
+  grafo.removerAresta(2,2)
+  print("PÓS REMOÇÃO:")
+  grafo.imprimirGrafo()
+  
+  print("SÃO VIZINHOS:")
+  print('(1,2): {}'.format(grafo.saoVizinhos(1,2)))
+  print('(1,4): {}'.format(grafo.saoVizinhos(1,4)))
+  print("--------------------------------\n")
+  return grafo
