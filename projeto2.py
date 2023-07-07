@@ -3,6 +3,9 @@ class No:
     # O atributo vertice, por agora, armazena index
     self.vertice = vertice
     self.prox = prox
+    self.marca = False
+    self.profundidadeEntrada = 0
+    self.profundidadeSaida = 0
 
 class Vertice:
   def __init__(self, valor, index):
@@ -17,6 +20,33 @@ class Aresta:
 class GrafoEstrutura:
   def __init__(self):
     self.estrutura = []
+    self.arestaArvore = []
+    self.arestaRetorno = []
+    self.profundadidadeEntrada = 1
+    self.profundidadeSaida = 1
+
+  def bp(self, verticeInicial):
+    verticeInicial.vertice.marca = True
+
+    verticeNo = self.estrutura[verticeInicial.vertice.index]
+    verticeNo.vertice.profundidadeEntrada = self.profundadidadeEntrada
+    self.profundadidadeEntrada += 1
+
+    vizinho = verticeInicial.prox
+    #print(verticeInicial.vertice.valor)
+    while vizinho:
+      tupla = (verticeInicial.vertice.valor, vizinho.vertice.valor)
+      tuplaReverse = (vizinho.vertice.valor, verticeInicial.vertice.valor)
+      if not vizinho.vertice.marca:
+        self.arestaArvore.append(tupla)
+        self.bp2(self.estrutura[vizinho.vertice.index])
+        self.profundidadeSaida += 1
+      elif not tuplaReverse in self.arestaArvore and not tuplaReverse in self.arestaRetorno:
+          self.arestaRetorno.append(tupla)
+      vizinho = vizinho.prox
+
+    verticeInicial.vertice.profundidadeSaida = self.profundidadeSaida
+
 
   def criarGrafoCompleto(self):
     for i in range(len(self.estrutura)):
@@ -84,6 +114,8 @@ class GrafoEstrutura:
       for v2 in vertices2:
         if self.saoVizinho(v1, v2):
           return False
+
+    return True
 
   def criarAresta(self, v1, v2):
     self.criarArestaUnidirecional(v1, v2)
@@ -165,26 +197,22 @@ def criarGrafoBipartido():
   v3 = Vertice("v3", 2)
   v4 = Vertice("v4", 3)
   v5 = Vertice("v5", 4)
+  v6 = Vertice("v6", 4)
 
   grafo.adicionarVertices([v1, v2, v3, v4, v5])
-  grafo.criarArestaUnidirecional(v1,v3)
-  grafo.criarArestaUnidirecional(v1,v4)
-  grafo.criarArestaUnidirecional(v1,v5)
+  grafo.criarAresta(v1,v3)
+  grafo.criarAresta(v1,v4)
+  grafo.criarAresta(v1,v5)
 
-  grafo.criarArestaUnidirecional(v2,v3)
-  grafo.criarArestaUnidirecional(v2,v4)
-  grafo.criarArestaUnidirecional(v2,v5)
+  grafo.criarAresta(v2,v3)
+  grafo.criarAresta(v2,v4)
+  grafo.criarAresta(v2,v5)
 
-  grafo.criarArestaUnidirecional(v3,v1)
-  grafo.criarArestaUnidirecional(v3,v2)
-
-  grafo.criarArestaUnidirecional(v4,v1)
-  grafo.criarArestaUnidirecional(v4,v2)
-
-  grafo.criarArestaUnidirecional(v5,v1)
-  grafo.criarArestaUnidirecional(v5,v2)
   grafo.imprimirGrafo()
-  print(grafo.verificarBipartido({v1, v2}, {v3, v4, v5}))
+  #testar com ligação entre si e remover set
+  set1 = set([])
+  set2 = set([v1])
+  print(grafo.verificarBipartido(set1, set2))
 
 def main():
   #grafo = GrafoEstrutura()

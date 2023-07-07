@@ -9,6 +9,9 @@ class Vertice:
   def __init__(self, valor, index):
     self.valor = valor
     self.index = index
+    self.marca = False
+    self.profundidadeEntrada = 0
+    self.profundidadeSaida = 0
 
 class Aresta:
   def __init__(self, vertice1, vertice2):
@@ -18,6 +21,32 @@ class Aresta:
 class GrafoEstrutura:
   def __init__(self):
     self.estrutura = []
+    self.arestaArvore = []
+    self.arestaRetorno = []
+    self.profundadidadeEntrada = 1
+    self.profundidadeSaida = 1
+
+  def bp(self, verticeInicial):
+    verticeInicial.vertice.marca = True
+
+    verticeNo = self.estrutura[verticeInicial.vertice.index]
+    verticeNo.vertice.profundidadeEntrada = self.profundadidadeEntrada
+    self.profundadidadeEntrada += 1
+
+    vizinho = verticeInicial.prox
+    #print(verticeInicial.vertice.valor)
+    while vizinho:
+      tupla = (verticeInicial.vertice.valor, vizinho.vertice.valor)
+      tuplaReverse = (vizinho.vertice.valor, verticeInicial.vertice.valor)
+      if not vizinho.vertice.marca:
+        self.arestaArvore.append(tupla)
+        self.bp2(self.estrutura[vizinho.vertice.index])
+        self.profundidadeSaida += 1
+      elif not tuplaReverse in self.arestaArvore and not tuplaReverse in self.arestaRetorno:
+          self.arestaRetorno.append(tupla)
+      vizinho = vizinho.prox
+
+    verticeInicial.vertice.profundidadeSaida = self.profundidadeSaida
 
   def adicionarVertices(self, vertices):
     for vertice in vertices:
@@ -75,7 +104,7 @@ class GrafoEstrutura:
       if auxElementNo.vertice != -1:
         print("No {}".format(auxElementNo.vertice.index))
 
-  def saoVizinhos(self, v1, v2):
+  def saoVizinho(self, v1, v2):
     verticeNo = self.estrutura[v1.index].prox
     while verticeNo != None:
       if verticeNo.vertice == v2:
