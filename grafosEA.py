@@ -249,6 +249,25 @@ class GrafoEstrutura:
       )
     print("--------------------------------")
 
+class Passeio:
+  def __init__(self, vertices):
+    self.vertices = vertices
+
+  def imprimirPasseio(self, reverso=False):
+    if reverso == True:
+      self.vertices.reverse()
+
+    for i in self.vertices[:len(self.vertices)-1]:
+      print(i.valor + " -> ", end="")
+    print(self.vertices[len(self.vertices)-1].valor)
+
+    self.vertices.reverse()
+
+  def pegarSecao(self, i, j):
+    sessao = self.vertices.copy()
+    return sessao[i:j] 
+    
+
 class GraphDrawerEA:
   def __init__(self, estruturaAdj):
     self.estruturaAdj = estruturaAdj
