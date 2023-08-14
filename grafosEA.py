@@ -6,7 +6,7 @@ class No:
     self.prox = prox
 
 class Vertice:
-  def __init__(self, valor, index):
+  def __init__(self, valor=None, index=-1):
     self.valor = valor
     self.index = index
     self.marca = False
@@ -21,10 +21,79 @@ class Aresta:
 class GrafoEstrutura:
   def __init__(self):
     self.estrutura = []
+    self.ordem = 0
     self.arestaArvore = []
     self.arestaRetorno = []
     self.profundadidadeEntrada = 1
     self.profundidadeSaida = 1
+
+  def verificarVertice(self, vertice):
+    for verticeEstrutura in self.estrutura:
+      if verticeEstrutura.vertice.valor == vertice.valor: return True
+    return False
+
+  def gerarSubgrafo(self, vertices, arestas):
+    subgrafo = GrafoEstrutura()
+    for vertice in vertices:
+      if self.verificarVertice(vertice):
+        subgrafo.adicionarVertices([vertice])
+    
+    for aresta in arestas:
+      if self.saoVizinho(aresta.vertice1, aresta.vertice2): 
+        subgrafo.criarAresta(aresta.vertice1, aresta.vertice2)
+    subgrafo.imprimirGrafo()
+
+  def gerarInduzido(self, vertices):
+    subgrafo = GrafoEstrutura()
+    for vertice in vertices:
+      if self.verificarVertice(vertice):
+        subgrafo.adicionarVertices([vertice])
+    
+    for vertice1 in vertices:
+      for vertice2 in vertices:
+        condicao = self.saoVizinho(vertice1, vertice2)
+        if condicao:
+          nVezes = condicao
+          while(nVezes > 0):
+            subgrafo.__adicionarNo(vertice1, vertice2)
+            nVezes -= 1
+    subgrafo.imprimirGrafo()
+    
+  def subtrairVertices(self, vertices):
+    verticeOut = [elemento.vertice for elemento in self.estrutura if elemento.vertice.valor not in [vertice.valor for vertice in vertices]]
+    self.gerarInduzido(verticeOut)
+    
+  def gerarArestaInduzido(self, arestas):
+    listaVertices = []
+    for aresta in arestas:
+      if not aresta.vertice1 in listaVertices: listaVertices.append(aresta.vertice1)
+      if not aresta.vertice2 in listaVertices: listaVertices.append(aresta.vertice2)
+    self.gerarSubgrafo(listaVertices, arestas)
+
+  def subtrairArestas(self, arestas):
+    subgrafo = GrafoEstrutura()
+    subgrafo.estrutura = self.estrutura
+    for aresta in arestas:
+      if self.saoVizinho(aresta.vertice1, aresta.vertice2):
+        subgrafo.removerAresta(aresta.vertice1, aresta.vertice2)
+    subgrafo.imprimirGrafo()
+  
+  def saoVizinho(self, v1, v2):
+    nRepeticoes = 0
+    for verticeNo in self.estrutura:
+      if verticeNo.vertice.valor == v1.valor:
+        index = verticeNo.vertice.index
+        break
+    
+    if  self.estrutura[index].prox == None: 
+      return nRepeticoes
+    
+    verticeNo = self.estrutura[index].prox
+    while verticeNo != None:
+      if verticeNo.vertice.valor == v2.valor:
+        nRepeticoes += 1
+      verticeNo = verticeNo.prox
+    return nRepeticoes
 
   def bp(self, verticeInicial):
     verticeInicial.vertice.marca = True
@@ -34,13 +103,13 @@ class GrafoEstrutura:
     self.profundadidadeEntrada += 1
 
     vizinho = verticeInicial.prox
-    #print(verticeInicial.vertice.valor)
+    print(f'vertice visitado:', verticeInicial.vertice.valor)
     while vizinho:
       tupla = (verticeInicial.vertice.valor, vizinho.vertice.valor)
       tuplaReverse = (vizinho.vertice.valor, verticeInicial.vertice.valor)
       if not vizinho.vertice.marca:
         self.arestaArvore.append(tupla)
-        self.bp2(self.estrutura[vizinho.vertice.index])
+        self.bp(self.estrutura[vizinho.vertice.index])
         self.profundidadeSaida += 1
       elif not tuplaReverse in self.arestaArvore and not tuplaReverse in self.arestaRetorno:
           self.arestaRetorno.append(tupla)
@@ -50,11 +119,19 @@ class GrafoEstrutura:
 
   def adicionarVertices(self, vertices):
     for vertice in vertices:
-      self.estrutura.append(No(vertice))
+      newVertice = Vertice(vertice.valor)
+      newVertice.index = self.ordem
+      self.estrutura.append(No(newVertice))
+      self.ordem += 1
 
   def __adicionarNo(self, vertice, verticeAdicionado):
-    VerticeNo = self.estrutura[vertice.index]
-    while VerticeNo.prox:
+    for verticeNo in self.estrutura:
+      if verticeNo.vertice.valor == vertice.valor:
+        index = verticeNo.vertice.index
+        break
+
+    VerticeNo = self.estrutura[index]
+    while VerticeNo.prox != None:
       VerticeNo = VerticeNo.prox
     VerticeNo.prox = No(verticeAdicionado)
 
@@ -63,12 +140,17 @@ class GrafoEstrutura:
     self.__adicionarNo(v2, v1)
 
   def __removerNo(self, v1, v2):
-    if self.estrutura[v1.index].vertice == v2:
-      self.estrutura[v1.index].prox = self.estrutura[v1.index].prox
+    for verticeNo in self.estrutura:
+      if verticeNo.vertice.valor == v1.valor:
+        index = verticeNo.vertice.index
+        break
+    
+    if self.estrutura[index].vertice.valor == v2.valor:
+      self.estrutura[index].prox = self.estrutura[index].prox
     else:
       anterior = None
-      atual = self.estrutura[v1.index]
-      while atual and (atual.vertice != v2):
+      atual = self.estrutura[index]
+      while atual and (atual.vertice.valor != v2.valor):
         anterior = atual
         atual = atual.prox
       if atual:
@@ -99,18 +181,10 @@ class GrafoEstrutura:
     for verticeNo in self.estrutura:
       auxElementNo = verticeNo
       while auxElementNo.prox != None:
-        print("No {} -> ".format(auxElementNo.vertice.index), end="")
+        print("No {} -> ".format(auxElementNo.vertice.valor), end="")
         auxElementNo = auxElementNo.prox
       if auxElementNo.vertice != -1:
-        print("No {}".format(auxElementNo.vertice.index))
-
-  def saoVizinho(self, v1, v2):
-    verticeNo = self.estrutura[v1.index].prox
-    while verticeNo != None:
-      if verticeNo.vertice == v2:
-        return True
-      verticeNo = verticeNo.prox
-    return False
+        print("No {}".format(auxElementNo.vertice.valor))
 
   def imprimirGrafo(self):
     # Número de vertices e arestas
@@ -121,10 +195,9 @@ class GrafoEstrutura:
     # Listar grau de cada vertice
     print("\nVértices e seus Graus: ")
     for verticeNo in self.estrutura:
-      index = verticeNo.vertice.index
       print(
         "Vértice {}: {}".format(
-          index + 1, self.calcularGrauVertice(verticeNo.vertice)
+          verticeNo.vertice.valor, self.calcularGrauVertice(verticeNo.vertice)
         )
       )
     print("--------------------------------")
