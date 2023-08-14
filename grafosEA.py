@@ -6,7 +6,7 @@ class No:
     self.prox = prox
 
 class Vertice:
-  def __init__(self, valor=None, index=-1):
+  def __init__(self, valor, index=-1):
     self.valor = valor
     self.index = index
     self.marca = False
@@ -37,9 +37,9 @@ class GrafoEstrutura:
     for vertice in vertices:
       if self.verificarVertice(vertice):
         subgrafo.adicionarVertices([vertice])
-    
+
     for aresta in arestas:
-      if self.saoVizinho(aresta.vertice1, aresta.vertice2): 
+      if self.saoVizinho(aresta.vertice1, aresta.vertice2):
         subgrafo.criarAresta(aresta.vertice1, aresta.vertice2)
     subgrafo.imprimirGrafo()
 
@@ -48,7 +48,7 @@ class GrafoEstrutura:
     for vertice in vertices:
       if self.verificarVertice(vertice):
         subgrafo.adicionarVertices([vertice])
-    
+
     for vertice1 in vertices:
       for vertice2 in vertices:
         condicao = self.saoVizinho(vertice1, vertice2)
@@ -58,11 +58,12 @@ class GrafoEstrutura:
             subgrafo.__adicionarNo(vertice1, vertice2)
             nVezes -= 1
     subgrafo.imprimirGrafo()
-    
+
   def subtrairVertices(self, vertices):
-    verticeOut = [elemento.vertice for elemento in self.estrutura if elemento.vertice.valor not in [vertice.valor for vertice in vertices]]
+    verticeOut = [elemento.vertice for elemento in self.estrutura if elemento.vertice not in vertices]
+    #self.imprimirGrafo()
     self.gerarInduzido(verticeOut)
-    
+
   def gerarArestaInduzido(self, arestas):
     listaVertices = []
     for aresta in arestas:
@@ -77,17 +78,18 @@ class GrafoEstrutura:
       if self.saoVizinho(aresta.vertice1, aresta.vertice2):
         subgrafo.removerAresta(aresta.vertice1, aresta.vertice2)
     subgrafo.imprimirGrafo()
-  
+
   def saoVizinho(self, v1, v2):
     nRepeticoes = 0
     for verticeNo in self.estrutura:
       if verticeNo.vertice.valor == v1.valor:
         index = verticeNo.vertice.index
         break
-    
-    if  self.estrutura[index].prox == None: 
+        #print('{} [{}]'.format(verticeNo.vertice.valor, verticeNo.vertice.index))
+    #self.imprimirEA()
+    if self.estrutura[index].prox == None:
       return nRepeticoes
-    
+
     verticeNo = self.estrutura[index].prox
     while verticeNo != None:
       if verticeNo.vertice.valor == v2.valor:
@@ -119,18 +121,20 @@ class GrafoEstrutura:
 
   def adicionarVertices(self, vertices):
     for vertice in vertices:
-      newVertice = Vertice(vertice.valor)
-      newVertice.index = self.ordem
-      self.estrutura.append(No(newVertice))
+      vertice.index = self.ordem
+      self.estrutura.append(No(vertice))
       self.ordem += 1
 
   def __adicionarNo(self, vertice, verticeAdicionado):
-    for verticeNo in self.estrutura:
-      if verticeNo.vertice.valor == vertice.valor:
-        index = verticeNo.vertice.index
-        break
+    for verticeNoo in self.estrutura:
+      if verticeNoo.vertice.valor == vertice.valor:
+        vertice.index = verticeNoo.vertice.index
 
-    VerticeNo = self.estrutura[index]
+    for verticeNoo in self.estrutura:
+      if verticeNoo.vertice.valor == verticeAdicionado.valor:
+        verticeAdicionado.index = verticeNoo.vertice.index
+
+    VerticeNo = self.estrutura[vertice.index]
     while VerticeNo.prox != None:
       VerticeNo = VerticeNo.prox
     VerticeNo.prox = No(verticeAdicionado)
@@ -140,16 +144,11 @@ class GrafoEstrutura:
     self.__adicionarNo(v2, v1)
 
   def __removerNo(self, v1, v2):
-    for verticeNo in self.estrutura:
-      if verticeNo.vertice.valor == v1.valor:
-        index = verticeNo.vertice.index
-        break
-    
-    if self.estrutura[index].vertice.valor == v2.valor:
-      self.estrutura[index].prox = self.estrutura[index].prox
+    if self.estrutura[v1.index].vertice.valor == v2.valor:
+      self.estrutura[v1.index].prox = self.estrutura[v1.index].prox
     else:
       anterior = None
-      atual = self.estrutura[index]
+      atual = self.estrutura[v1.index]
       while atual and (atual.vertice.valor != v2.valor):
         anterior = atual
         atual = atual.prox
@@ -176,10 +175,58 @@ class GrafoEstrutura:
       graus += self.calcularGrauVertice(verticeNo.vertice)
     return graus
 
+  def criarGrafoRegularPar(self, tamanho, grau):
+    ia = grau//2
+    while ia:
+      for i in range(tamanho-1):
+        verticeNo1 = self.estrutura[i]
+        verticeNo2 = self.estrutura[i+1]
+        self.criarAresta(verticeNo1.vertice, verticeNo2.vertice)
+
+      primeiro = self.estrutura[0].vertice
+      ultimo = self.estrutura[tamanho-1].vertice
+      self.criarAresta(ultimo, primeiro)
+      ia -= 1
+
+  def verificarBipartido(self, vertices1, vertices2):
+    interccao = vertices1 & vertices2
+    if interccao:
+      return False
+
+    for v1 in vertices1:
+      for v2 in vertices1:
+        if self.saoVizinho(v1, v2):
+          return False
+
+    for v1 in vertices2:
+      for v2 in vertices2:
+        if self.saoVizinho(v1, v2):
+          return False
+
+    return True
+
+  def transformarGrafoRegularImpar(self, tamanho):
+    for i in range(0, tamanho, 2):
+      print(i)
+      verticeNo1 =  self.estrutura[i].vertice
+      verticeNo2 =  self.estrutura[i+1].vertice
+      self.criarAresta(verticeNo1, verticeNo2)
+
+  def criarGrafoKReg(self, tamanho, grau):
+    self.criarVertices(tamanho)
+    if grau % 2 == 0:
+      self.criarGrafoRegularPar(tamanho, grau)
+    elif tamanho % 2 == 1:
+      print("não vai da não")
+    elif tamanho % 2 == 0:
+      self.criarGrafoRegularPar(tamanho, grau-1)
+      self.transformarGrafoRegularImpar(tamanho)
+
   def imprimirEA(self):
     print("Estrutura de Adjacência: ")
     for verticeNo in self.estrutura:
       auxElementNo = verticeNo
+      print(auxElementNo.vertice.valor)
       while auxElementNo.prox != None:
         print("No {} -> ".format(auxElementNo.vertice.valor), end="")
         auxElementNo = auxElementNo.prox
@@ -257,3 +304,4 @@ class GraphDrawerEA:
         self.canvas.create_text(x3, y3 - 50, text=str(loops//2) + " laços", fill="black")
         self.canvas.create_arc(x3-10, y3-30, x3+10, y3, start=270, extent=359, style=tk.ARC)
       self.verticesRepetidos = []
+

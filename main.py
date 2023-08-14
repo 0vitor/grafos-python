@@ -8,7 +8,7 @@ def grafoExemplo():
   w = Vertice('w')
 
   grafo.adicionarVertices([u, y, v, x, w])
-  
+
   grafo.criarAresta(u, y)
   grafo.criarAresta(u, v)
   grafo.criarAresta(y, v)
@@ -17,7 +17,7 @@ def grafoExemplo():
   grafo.criarAresta(v, w)
   grafo.criarAresta(x, w)
   grafo.criarAresta(x, y)
-  
+
   a = Aresta(u,v)
   b = Aresta(v,w)
   c = Aresta(w,x)
@@ -26,7 +26,7 @@ def grafoExemplo():
   f = Aresta(y,v)
   g = Aresta(v,y)
   h = Aresta(y,w)
-  
+
   print("GRAFO EXEMPLO")
   grafo.imprimirGrafo()
   print("A) SUBGRAFO PRÓPIO")
@@ -34,12 +34,12 @@ def grafoExemplo():
   print("B) SUBGRAFO GERADOR")
   grafo.gerarSubgrafo([u,y,v,x,w], [])
   print("C) SUBGRAFO INDUZIDO")
-  grafo.gerarInduzido([y,v,x,u]) 
+  grafo.gerarInduzido([y,v,x,u])
   print("D) SUBTRAÇÃO DE VÉRTICES")
   grafo.subtrairVertices([u,w])
   print("E) SUBGRAFO ARESTA INDUZIDO")
   grafo.gerarArestaInduzido([a,c,e,g])
   print("F) SUBTRAÇÃO DE ARESTAS")
   grafo.subtrairArestas([a,b,f])
-  
+
 grafoExemplo()
