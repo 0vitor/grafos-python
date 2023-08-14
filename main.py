@@ -1,19 +1,45 @@
-from grafosEA import GraphDrawerEA
-from grafosMA import GraphDrawerMA
-from exemplos import exemploGrafo1MA, exemploGrafo1EA, exemploGrafo2MA, exemploGrafo2EA
-from grafobp import grafoEABP
+from grafosEA import Vertice, Aresta, GrafoEstrutura
+def grafoExemplo():
+  grafo = GrafoEstrutura()
+  u = Vertice('u')
+  y = Vertice('y')
+  v = Vertice('v')
+  x = Vertice('x')
+  w = Vertice('w')
 
-def main():
-  grafoEABP()
-
-  #grafoEx1MA = exemploGrafo1MA()
-  #grafoEx2MA = exemploGrafo2MA()
-  #grafoEx1EA = exemploGrafo1EA()
-  #grafoEx2EA = exemploGrafo2EA()
-
-  #GraphDrawerMA(grafoEx1MA.matriz)
-  #GraphDrawerMA(grafoEx2MA.matriz)
-  #GraphDrawerEA(grafoEx1EA.estrutura)
-  #GraphDrawerEA(grafoEx2EA.estrutura)
-
-main()
+  grafo.adicionarVertices([u, y, v, x, w])
+  
+  grafo.criarAresta(u, y)
+  grafo.criarAresta(u, v)
+  grafo.criarAresta(y, v)
+  grafo.criarAresta(y, v)
+  grafo.criarAresta(y, w)
+  grafo.criarAresta(v, w)
+  grafo.criarAresta(x, w)
+  grafo.criarAresta(x, y)
+  
+  a = Aresta(u,v)
+  b = Aresta(v,w)
+  c = Aresta(w,x)
+  d = Aresta(x,y)
+  e = Aresta(u,y)
+  f = Aresta(y,v)
+  g = Aresta(v,y)
+  h = Aresta(y,w)
+  
+  print("GRAFO EXEMPLO")
+  grafo.imprimirGrafo()
+  print("A) SUBGRAFO PRÓPIO")
+  grafo.gerarSubgrafo([u,y,v], [f,e])
+  print("B) SUBGRAFO GERADOR")
+  grafo.gerarSubgrafo([u,y,v,x,w], [])
+  print("C) SUBGRAFO INDUZIDO")
+  grafo.gerarInduzido([y,v,x,u]) 
+  print("D) SUBTRAÇÃO DE VÉRTICES")
+  grafo.subtrairVertices([u,w])
+  print("E) SUBGRAFO ARESTA INDUZIDO")
+  grafo.gerarArestaInduzido([a,c,e,g])
+  print("F) SUBTRAÇÃO DE ARESTAS")
+  grafo.subtrairArestas([a,b,f])
+  
+grafoExemplo()
