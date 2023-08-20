@@ -24,6 +24,7 @@ class GrafoEstrutura:
     self.ordem = 0
     self.arestaArvore = []
     self.arestaRetorno = []
+    self.verticesArvore = []
     self.profundadidadeEntrada = 1
     self.profundidadeSaida = 1
 
@@ -97,7 +98,12 @@ class GrafoEstrutura:
       verticeNo = verticeNo.prox
     return nRepeticoes
 
-  def bp(self, verticeInicial):
+  def retornaNo(self, vertice):
+    for verticeNo in self.estrutura:
+      if verticeNo.vertice.valor == vertice.valor:
+        return verticeNo
+
+  def __atualizaBP(self, verticeInicial):
     verticeInicial.vertice.marca = True
 
     verticeNo = self.estrutura[verticeInicial.vertice.index]
@@ -105,19 +111,47 @@ class GrafoEstrutura:
     self.profundadidadeEntrada += 1
 
     vizinho = verticeInicial.prox
-    print(f'vertice visitado:', verticeInicial.vertice.valor)
+    self.verticesArvore.append(verticeInicial.vertice)
     while vizinho:
       tupla = (verticeInicial.vertice.valor, vizinho.vertice.valor)
       tuplaReverse = (vizinho.vertice.valor, verticeInicial.vertice.valor)
       if not vizinho.vertice.marca:
         self.arestaArvore.append(tupla)
-        self.bp(self.estrutura[vizinho.vertice.index])
+        self.__atualizaBP(self.estrutura[vizinho.vertice.index])
         self.profundidadeSaida += 1
       elif not tuplaReverse in self.arestaArvore and not tuplaReverse in self.arestaRetorno:
           self.arestaRetorno.append(tupla)
       vizinho = vizinho.prox
 
     verticeInicial.vertice.profundidadeSaida = self.profundidadeSaida
+
+  def bp(self, verticeInicial):
+    verticeNo = self.retornaNo(verticeInicial)
+    self.__atualizaBP(verticeNo)
+
+    for vertice in self.verticesArvore:
+      print(f'vertice visitado:', vertice)
+
+  def encontraPasseio(self, verticeInicial, verticeFinal):
+    verticeNo = self.retornaNo(verticeInicial)
+    self.__atualizaBP(verticeNo)
+
+    listaPasseio = [verticeInicial]
+    count = 1
+    while count < len(self.verticesArvore):
+      if self.verticesArvore[count].valor == verticeFinal.valor:
+        listaPasseio.append(self.verticesArvore[count])
+        passeio = Passeio(listaPasseio)
+        passeio.imprimirPasseio()
+        break
+      if self.saoVizinho(listaPasseio[-1], self.verticesArvore[count]):
+        listaPasseio.append(self.verticesArvore[count])
+        count += 1
+      else:
+        listaPasseio.pop()
+
+  def encontraCaminho(self, verticeInicial, verticeFinal):
+    self.encontraPasseio(verticeInicial, verticeFinal) 
 
   def adicionarVertices(self, vertices):
     for vertice in vertices:
