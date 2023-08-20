@@ -25,9 +25,19 @@ def main():
   grafo.criarAresta(f, h)
   grafo.criarAresta(g, h)
 
-  grafo.encontraCaminho(a, e)
-  grafo.encontraCiclo()
+  grafo.criarAresta(d, e)
+  #grafo.encontraCaminho(a, e)
+  #grafo.encontraCiclo()
   grafo.buscaProfunidade(grafo.estrutura[0])
-  #print("aresta de arvore: ", grafo.arestaArvore)
-  print("aresta de retorno: ", grafo.arestaRetorno)
+  print("aresta de arvore: ")
+  for i in grafo.arestaArvore:
+    print(i[0].valor, i[1].valor)
+  #print("aresta de retorno: ", grafo.arestaRetorno)
+ #      0   1   2          4
+  #passeio = Passeio([a, c, d, b, e, a, b, c, b, b,c,d, f])
+  #passeio = Passeio([a, b, c, b, f])
+
+  #grafo.transformarEmCaminho(passeio)
+  #for v in passeio.vertices:
+  #  print(v.valor)
 main()

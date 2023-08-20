@@ -121,7 +121,7 @@ class GrafoEstrutura:
     self.profundadidadeEntrada += 1
 
     vizinho = verticeInicial.prox
-
+    print(verticeInicial.vertice.valor)
     while vizinho:
       tupla = (verticeInicial.vertice, vizinho.vertice)
       tuplaReverse = (vizinho.vertice, verticeInicial.vertice)
@@ -177,6 +177,42 @@ class GrafoEstrutura:
 
   def encontraCaminho(self, verticeInicial, verticeFinal):
     self.encontraPasseio(verticeInicial, verticeFinal)
+
+  def transformarEmCaminho(self, caminho):
+    i = 0
+    j = len(caminho.vertices) - 1
+    while i < len(caminho.vertices):
+      j = len(caminho.vertices)-1
+      while j > i:
+        print("i: ", i, "j: ", j)
+        #print(caminho.vertices[i].valor, caminho.vertices[-j].valor)
+        if caminho.vertices[i] == caminho.vertices[j]:
+
+          for _ in range(i , j):
+            caminho.vertices.pop(i+1)
+
+          j = len(caminho.vertices)
+          i = 0
+
+        j -= 1
+      i += 1
+
+
+
+
+    """ for i in range(len(caminho.vertices)):
+      for j in range(i+1, len(caminho.vertices)):
+        if caminho.vertices[i] == caminho.vertices[-j]:
+          repetido = True
+          for _ in range(i, j):
+            caminho.vertices.pop(i+1)
+
+        if repetido:
+          for i in caminho.vertices:
+            print(i.valor)
+          self.transformarEmCaminho(caminho)
+        return
+ """
 
   def adicionarVertices(self, vertices):
     for vertice in vertices:
@@ -383,32 +419,3 @@ class GraphDrawerEA:
         self.canvas.create_arc(x3-10, y3-30, x3+10, y3, start=270, extent=359, style=tk.ARC)
       self.verticesRepetidos = []
 
-
-def main():
-  grafo = GrafoEstrutura()
-  a = Vertice('a')
-  b = Vertice('b')
-  c = Vertice('c')
-  d = Vertice('d')
-  e = Vertice('e')
-  f = Vertice('f')
-  g = Vertice('g')
-  h = Vertice('h')
-
-  grafo.adicionarVertices([a,b,c,d,e,f,g,h])
-  grafo.criarAresta(a, b)
-  grafo.criarAresta(a, c)
-  grafo.criarAresta(a, e)
-  grafo.criarAresta(a, f)
-  grafo.criarAresta(b, d)
-  grafo.criarAresta(b, e)
-  grafo.criarAresta(c, f)
-  grafo.criarAresta(c, g)
-  grafo.criarAresta(c, h)
-  grafo.criarAresta(f ,g)
-  grafo.criarAresta(f, h)
-  grafo.criarAresta(g, h)
-
-  grafo.encontrarCiclo()
-
-main()
