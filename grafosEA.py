@@ -106,24 +106,47 @@ class GrafoEstrutura:
   def __atualizaBP(self, verticeInicial):
     verticeInicial.vertice.marca = True
 
+    vizinho = verticeInicial.prox
+    self.verticesArvore.append(verticeInicial.vertice)
+    while vizinho:
+      if not vizinho.vertice.marca:
+        self.__atualizaBP(self.estrutura[vizinho.vertice.index])
+      vizinho = vizinho.prox
+
+  def buscaProfunidade(self, verticeInicial):
+    verticeInicial.vertice.marca = True
+
     verticeNo = self.estrutura[verticeInicial.vertice.index]
     verticeNo.vertice.profundidadeEntrada = self.profundadidadeEntrada
     self.profundadidadeEntrada += 1
 
     vizinho = verticeInicial.prox
-    self.verticesArvore.append(verticeInicial.vertice)
+
     while vizinho:
-      tupla = (verticeInicial.vertice.valor, vizinho.vertice.valor)
-      tuplaReverse = (vizinho.vertice.valor, verticeInicial.vertice.valor)
+      tupla = (verticeInicial.vertice, vizinho.vertice)
+      tuplaReverse = (vizinho.vertice, verticeInicial.vertice)
       if not vizinho.vertice.marca:
         self.arestaArvore.append(tupla)
-        self.__atualizaBP(self.estrutura[vizinho.vertice.index])
+        self.buscaProfunidade(self.estrutura[vizinho.vertice.index])
         self.profundidadeSaida += 1
       elif not tuplaReverse in self.arestaArvore and not tuplaReverse in self.arestaRetorno:
           self.arestaRetorno.append(tupla)
       vizinho = vizinho.prox
 
     verticeInicial.vertice.profundidadeSaida = self.profundidadeSaida
+
+  def encontrarCiclo(self):
+    self.buscaProfunidade(self.estrutura[0])
+    for v in self.estrutura:
+      v.vertice.marca = False
+
+    verticeInicial = self.arestaRetorno[0][1]
+    verticeFim = self.arestaRetorno[0][0]
+
+    ciclo = self.encontraPasseio(verticeInicial, verticeFim)
+
+    for vertice in ciclo:
+      print(vertice.valor)
 
   def bp(self, verticeInicial):
     verticeNo = self.retornaNo(verticeInicial)
@@ -137,13 +160,15 @@ class GrafoEstrutura:
     self.__atualizaBP(verticeNo)
 
     listaPasseio = [verticeInicial]
+
     count = 1
     while count < len(self.verticesArvore):
-      if self.verticesArvore[count].valor == verticeFinal.valor:
+      #print(self.saoVizinho(self.verticesArvore[3], self.verticesArvore[2]))
+      if self.verticesArvore[count].valor == verticeFinal.valor and self.saoVizinho(listaPasseio[-1], self.verticesArvore[count]):
         listaPasseio.append(self.verticesArvore[count])
         passeio = Passeio(listaPasseio)
         passeio.imprimirPasseio()
-        break
+        return listaPasseio
       if self.saoVizinho(listaPasseio[-1], self.verticesArvore[count]):
         listaPasseio.append(self.verticesArvore[count])
         count += 1
@@ -151,7 +176,7 @@ class GrafoEstrutura:
         listaPasseio.pop()
 
   def encontraCaminho(self, verticeInicial, verticeFinal):
-    self.encontraPasseio(verticeInicial, verticeFinal) 
+    self.encontraPasseio(verticeInicial, verticeFinal)
 
   def adicionarVertices(self, vertices):
     for vertice in vertices:
@@ -299,8 +324,8 @@ class Passeio:
 
   def pegarSecao(self, i, j):
     sessao = self.vertices.copy()
-    return sessao[i:j] 
-    
+    return sessao[i:j]
+
 
 class GraphDrawerEA:
   def __init__(self, estruturaAdj):
@@ -358,3 +383,32 @@ class GraphDrawerEA:
         self.canvas.create_arc(x3-10, y3-30, x3+10, y3, start=270, extent=359, style=tk.ARC)
       self.verticesRepetidos = []
 
+
+def main():
+  grafo = GrafoEstrutura()
+  a = Vertice('a')
+  b = Vertice('b')
+  c = Vertice('c')
+  d = Vertice('d')
+  e = Vertice('e')
+  f = Vertice('f')
+  g = Vertice('g')
+  h = Vertice('h')
+
+  grafo.adicionarVertices([a,b,c,d,e,f,g,h])
+  grafo.criarAresta(a, b)
+  grafo.criarAresta(a, c)
+  grafo.criarAresta(a, e)
+  grafo.criarAresta(a, f)
+  grafo.criarAresta(b, d)
+  grafo.criarAresta(b, e)
+  grafo.criarAresta(c, f)
+  grafo.criarAresta(c, g)
+  grafo.criarAresta(c, h)
+  grafo.criarAresta(f ,g)
+  grafo.criarAresta(f, h)
+  grafo.criarAresta(g, h)
+
+  grafo.encontrarCiclo()
+
+main()

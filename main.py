@@ -1,14 +1,33 @@
-from grafosEA import Passeio, Vertice
+from grafosEA import Passeio, Vertice, GrafoEstrutura
 
 def main():
-  u = Vertice('u')
-  y = Vertice('y')
-  v = Vertice('v')
-  x = Vertice('x')
-  w = Vertice('w')
-  passeio = Passeio([u,y,v,x,w])
-  passeio.imprimirPasseio()
-  passeio.imprimirPasseio(reverse=True)
-  sessao = passeio.pegarSecao
+  grafo = GrafoEstrutura()
+  a = Vertice('a')
+  b = Vertice('b')
+  c = Vertice('c')
+  d = Vertice('d')
+  e = Vertice('e')
+  f = Vertice('f')
+  g = Vertice('g')
+  h = Vertice('h')
 
+  grafo.adicionarVertices([a,b,c,d,e,f,g,h])
+  grafo.criarAresta(a, b)
+  grafo.criarAresta(a, c)
+  grafo.criarAresta(a, e)
+  grafo.criarAresta(a, f)
+  grafo.criarAresta(b, d)
+  grafo.criarAresta(b, e)
+  grafo.criarAresta(c, f)
+  grafo.criarAresta(c, g)
+  grafo.criarAresta(c, h)
+  grafo.criarAresta(f ,g)
+  grafo.criarAresta(f, h)
+  grafo.criarAresta(g, h)
+
+  grafo.encontraCaminho(a, e)
+  grafo.encontraCiclo()
+  grafo.buscaProfunidade(grafo.estrutura[0])
+  #print("aresta de arvore: ", grafo.arestaArvore)
+  print("aresta de retorno: ", grafo.arestaRetorno)
 main()
