@@ -107,7 +107,7 @@ class GrafoEstrutura:
   def __atualizaBP(self, verticeInicial, recursao=False):
     if not recursao: self.verticesArvore = []
     verticeInicial.vertice.marca = True
-     
+
     vizinho = verticeInicial.prox
     self.verticesArvore.append(verticeInicial.vertice)
     while vizinho:
@@ -200,7 +200,7 @@ class GrafoEstrutura:
     #Verifica se existe um caminho entre os pontos u(aresta.vertice1) e v(aresta.vertice2)
     verticesPasseio = self.encontraCaminho(aresta.vertice1, aresta.vertice2, True)
     if verticesPasseio == []: return
-    
+
     #Adiciona Aresta e imprime o ciclo
     self.criarAresta(aresta.vertice1, aresta.vertice2)
     print("Ciclo[{},{}]: ".format(aresta.vertice1.valor, aresta.vertice2.valor), end="")
@@ -357,7 +357,9 @@ class GrafoEstrutura:
 
   def naoContemCircuito(self):
     vertices = len(self.estrutura)
-    arestas = len(self.)
+    arestas = len(self.aresta)
+
+    return self.verificarConexidade() and vertices - 1  == arestas
 
   def verificarConexidade(self): #5.12
     self.__atualizaBP(self.estrutura[0])
