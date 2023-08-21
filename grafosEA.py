@@ -125,7 +125,7 @@ class GrafoEstrutura:
     self.profundadidadeEntrada += 1
 
     vizinho = verticeInicial.prox
-    #print(verticeInicial.vertice.valor)
+    print(verticeInicial.vertice.valor)
     while vizinho:
       tupla = (verticeInicial.vertice, vizinho.vertice)
       tuplaReverse = (vizinho.vertice, verticeInicial.vertice)
@@ -141,7 +141,7 @@ class GrafoEstrutura:
     if not recursao:
       for v in self.estrutura: v.vertice.marca = False
 
-  def encontrarCiclo(self):
+  def encontrarCiclo(self):#5.7
     self.buscaProfunidade(self.estrutura[0])
     if len(self.arestaRetorno) == 0: return
     indice = random.randint(0, len(self.arestaRetorno) - 1)
@@ -163,7 +163,7 @@ class GrafoEstrutura:
     for vertice in self.verticesArvore:
       print(f'vertice visitado:', vertice)
 
-  def encontraPasseio(self, verticeInicial, verticeFinal, retorne=False):
+  def encontraPasseio(self, verticeInicial, verticeFinal, retorne=False):#5.5
     verticeNo = self.retornaNo(verticeInicial)
     self.__atualizaBP(verticeNo)
 
@@ -186,7 +186,7 @@ class GrafoEstrutura:
         listaPasseio.pop()
         if len(listaPasseio) == 0: return []
 
-  def encontraCaminho(self, verticeInicial, verticeFinal, retorne=False):
+  def encontraCaminho(self, verticeInicial, verticeFinal, retorne=False):#5.6
     verticesCaminho = self.encontraPasseio(verticeInicial, verticeFinal, True)
     if retorne: return verticesCaminho
     print("Caminho[{},{}]: ".format(verticeInicial.valor, verticeFinal.valor), end="")
@@ -240,8 +240,6 @@ class GrafoEstrutura:
           self.transformarEmCaminho(caminho)
         return
  """
-
-
 
   def adicionarVertices(self, vertices):
     for vertice in vertices:
@@ -356,6 +354,17 @@ class GrafoEstrutura:
         auxElementNo = auxElementNo.prox
       if auxElementNo.vertice != -1:
         print("No {}".format(auxElementNo.vertice.valor))
+
+  def naoContemCircuito(self):
+    vertices = len(self.estrutura)
+    arestas = len(self.)
+
+  def verificarConexidade(self): #5.12
+    self.__atualizaBP(self.estrutura[0])
+    if len(self.estrutura) == len(self.verticesArvore):
+      return True
+    else:
+      return False
 
   def imprimirGrafo(self):
     # Número de vertices e arestas

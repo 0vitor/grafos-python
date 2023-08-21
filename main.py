@@ -25,14 +25,17 @@ def main():
   grafo.criarAresta(f, h)
   grafo.criarAresta(g, h)
 
-  grafo.criarAresta(d, e)
+  #grafo.criarAresta(d, e)
+  grafo.imprimirEA()
+
+  #print(grafo.verificarConexidade())
   #grafo.imprimirEA()
   ex = Aresta(f,c)
-  grafo.extra1(ex)
+  #grafo.extra1(ex)
   #grafo.encontraCaminho(c,f)
   #grafo.encontraCaminho(a,e)
-  grafo.encontrarCiclo()
-  grafo.encontrarCiclo()
+  #grafo.encontrarCiclo()
+  #grafo.encontrarCiclo()
   #grafo.buscaProfunidade(grafo.estrutura[0])
   #print("aresta de arvore: ")
   #for i in grafo.arestaArvore:
