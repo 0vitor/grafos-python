@@ -1,4 +1,4 @@
-from grafosEA import Passeio, Vertice, GrafoEstrutura
+from grafosEA import Aresta, Passeio, Vertice, GrafoEstrutura
 
 def main():
   grafo = GrafoEstrutura()
@@ -26,12 +26,17 @@ def main():
   grafo.criarAresta(g, h)
 
   grafo.criarAresta(d, e)
-  #grafo.encontraCaminho(a, e)
-  #grafo.encontraCiclo()
-  grafo.buscaProfunidade(grafo.estrutura[0])
-  print("aresta de arvore: ")
-  for i in grafo.arestaArvore:
-    print(i[0].valor, i[1].valor)
+  #grafo.imprimirEA()
+  ex = Aresta(f,c)
+  grafo.extra1(ex)
+  #grafo.encontraCaminho(c,f)
+  #grafo.encontraCaminho(a,e)
+  grafo.encontrarCiclo()
+  grafo.encontrarCiclo()
+  #grafo.buscaProfunidade(grafo.estrutura[0])
+  #print("aresta de arvore: ")
+  #for i in grafo.arestaArvore:
+  #  print(i[0].valor, i[1].valor)
   #print("aresta de retorno: ", grafo.arestaRetorno)
  #      0   1   2          4
   #passeio = Passeio([a, c, d, b, e, a, b, c, b, b,c,d, f])
@@ -40,4 +45,6 @@ def main():
   #grafo.transformarEmCaminho(passeio)
   #for v in passeio.vertices:
   #  print(v.valor)
+
+
 main()

@@ -1,4 +1,5 @@
 import tkinter as tk
+import random
 
 class No:
   def __init__(self, vertice, prox=None):
@@ -103,17 +104,20 @@ class GrafoEstrutura:
       if verticeNo.vertice.valor == vertice.valor:
         return verticeNo
 
-  def __atualizaBP(self, verticeInicial):
+  def __atualizaBP(self, verticeInicial, recursao=False):
+    if not recursao: self.verticesArvore = []
     verticeInicial.vertice.marca = True
-
+     
     vizinho = verticeInicial.prox
     self.verticesArvore.append(verticeInicial.vertice)
     while vizinho:
       if not vizinho.vertice.marca:
-        self.__atualizaBP(self.estrutura[vizinho.vertice.index])
+        self.__atualizaBP(self.estrutura[vizinho.vertice.index], True)
       vizinho = vizinho.prox
+    if not recursao:
+      for v in self.estrutura: v.vertice.marca = False
 
-  def buscaProfunidade(self, verticeInicial):
+  def buscaProfunidade(self, verticeInicial, recursao=False):
     verticeInicial.vertice.marca = True
 
     verticeNo = self.estrutura[verticeInicial.vertice.index]
@@ -121,41 +125,45 @@ class GrafoEstrutura:
     self.profundadidadeEntrada += 1
 
     vizinho = verticeInicial.prox
-    print(verticeInicial.vertice.valor)
+    #print(verticeInicial.vertice.valor)
     while vizinho:
       tupla = (verticeInicial.vertice, vizinho.vertice)
       tuplaReverse = (vizinho.vertice, verticeInicial.vertice)
       if not vizinho.vertice.marca:
         self.arestaArvore.append(tupla)
-        self.buscaProfunidade(self.estrutura[vizinho.vertice.index])
+        self.buscaProfunidade(self.estrutura[vizinho.vertice.index], True)
         self.profundidadeSaida += 1
       elif not tuplaReverse in self.arestaArvore and not tuplaReverse in self.arestaRetorno:
           self.arestaRetorno.append(tupla)
       vizinho = vizinho.prox
 
     verticeInicial.vertice.profundidadeSaida = self.profundidadeSaida
+    if not recursao:
+      for v in self.estrutura: v.vertice.marca = False
 
   def encontrarCiclo(self):
     self.buscaProfunidade(self.estrutura[0])
-    for v in self.estrutura:
-      v.vertice.marca = False
+    if len(self.arestaRetorno) == 0: return
+    indice = random.randint(0, len(self.arestaRetorno) - 1)
 
-    verticeInicial = self.arestaRetorno[0][1]
-    verticeFim = self.arestaRetorno[0][0]
+    verticeInicial = self.arestaRetorno[indice][1]
+    verticeFinal = self.arestaRetorno[indice][0]
 
-    ciclo = self.encontraPasseio(verticeInicial, verticeFim)
-
-    for vertice in ciclo:
-      print(vertice.valor)
+    ciclo = self.encontraCaminho(verticeInicial, verticeFinal, True)
+    print("Ciclo[{},{}]: ".format(verticeInicial.valor, verticeFinal.valor), end="")
+    for i in range(1, len(ciclo)):
+      print("({},{}), ".format(ciclo[i-1].valor, ciclo[i].valor), end="")
+    print("({},{})".format(ciclo[-1].valor, ciclo[0].valor))
 
   def bp(self, verticeInicial):
     verticeNo = self.retornaNo(verticeInicial)
     self.__atualizaBP(verticeNo)
+    #self.buscaProfunidade(verticeNo)
 
     for vertice in self.verticesArvore:
       print(f'vertice visitado:', vertice)
 
-  def encontraPasseio(self, verticeInicial, verticeFinal):
+  def encontraPasseio(self, verticeInicial, verticeFinal, retorne=False):
     verticeNo = self.retornaNo(verticeInicial)
     self.__atualizaBP(verticeNo)
 
@@ -166,17 +174,39 @@ class GrafoEstrutura:
       #print(self.saoVizinho(self.verticesArvore[3], self.verticesArvore[2]))
       if self.verticesArvore[count].valor == verticeFinal.valor and self.saoVizinho(listaPasseio[-1], self.verticesArvore[count]):
         listaPasseio.append(self.verticesArvore[count])
+        if retorne: return listaPasseio
+        print("Passeio[{},{}]: ".format(verticeInicial.valor, verticeFinal.valor), end="")
         passeio = Passeio(listaPasseio)
         passeio.imprimirPasseio()
-        return listaPasseio
+        return
       if self.saoVizinho(listaPasseio[-1], self.verticesArvore[count]):
         listaPasseio.append(self.verticesArvore[count])
         count += 1
       else:
         listaPasseio.pop()
+        if len(listaPasseio) == 0: return []
 
-  def encontraCaminho(self, verticeInicial, verticeFinal):
-    self.encontraPasseio(verticeInicial, verticeFinal)
+  def encontraCaminho(self, verticeInicial, verticeFinal, retorne=False):
+    verticesCaminho = self.encontraPasseio(verticeInicial, verticeFinal, True)
+    if retorne: return verticesCaminho
+    print("Caminho[{},{}]: ".format(verticeInicial.valor, verticeFinal.valor), end="")
+    caminho = Passeio(verticesCaminho)
+    caminho.imprimirPasseio()
+
+  def extra1(self, aresta):
+    #Remove Aresta
+    self.removerAresta(aresta.vertice1, aresta.vertice2)
+
+    #Verifica se existe um caminho entre os pontos u(aresta.vertice1) e v(aresta.vertice2)
+    verticesPasseio = self.encontraCaminho(aresta.vertice1, aresta.vertice2, True)
+    if verticesPasseio == []: return
+    
+    #Adiciona Aresta e imprime o ciclo
+    self.criarAresta(aresta.vertice1, aresta.vertice2)
+    print("Ciclo[{},{}]: ".format(aresta.vertice1.valor, aresta.vertice2.valor), end="")
+    for i in range(1, len(verticesPasseio)):
+      print("({},{}), ".format(verticesPasseio[i-1].valor, verticesPasseio[i].valor), end="")
+    print("({},{})".format(verticesPasseio[-1].valor, verticesPasseio[0].valor))
 
   def transformarEmCaminho(self, caminho):
     i = 0
@@ -197,9 +227,6 @@ class GrafoEstrutura:
         j -= 1
       i += 1
 
-
-
-
     """ for i in range(len(caminho.vertices)):
       for j in range(i+1, len(caminho.vertices)):
         if caminho.vertices[i] == caminho.vertices[-j]:
@@ -213,6 +240,8 @@ class GrafoEstrutura:
           self.transformarEmCaminho(caminho)
         return
  """
+
+
 
   def adicionarVertices(self, vertices):
     for vertice in vertices:
@@ -349,14 +378,13 @@ class Passeio:
     self.vertices = vertices
 
   def imprimirPasseio(self, reverso=False):
-    if reverso == True:
-      self.vertices.reverse()
+    if reverso == True: self.vertices.reverse()
 
     for i in self.vertices[:len(self.vertices)-1]:
       print(i.valor + " -> ", end="")
     print(self.vertices[len(self.vertices)-1].valor)
 
-    self.vertices.reverse()
+    if reverso == True: self.vertices.reverse()
 
   def pegarSecao(self, i, j):
     sessao = self.vertices.copy()
