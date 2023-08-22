@@ -7,9 +7,10 @@ class No:
     self.prox = prox
 
 class Vertice:
-  def __init__(self, valor, index=-1):
+  def __init__(self, valor, index=-1, ncomp=-1):
     self.valor = valor
     self.index = index
+    self.ncomp = ncomp
     self.marca = False
     self.profundidadeEntrada = 0
     self.profundidadeSaida = 0
@@ -162,6 +163,32 @@ class GrafoEstrutura:
 
     for vertice in self.verticesArvore:
       print(f'vertice visitado:', vertice)
+
+  def existeNaoMarcado(self):
+    for verticeNo in self.estrutura:
+      if not verticeNo.vertice.marca:
+        return verticeNo, True
+    return None, False
+    
+  def auxComponentes(self, verticeInicial, ncomp):
+    verticeInicial.vertice.marca = True
+    verticeInicial.vertice.ncomp = ncomp
+
+    vizinho = verticeInicial.prox
+    while vizinho:
+      if not vizinho.vertice.marca: self.auxComponentes(vizinho, ncomp)
+      vizinho = vizinho.prox
+
+  def identificaComponentes(self):
+    ncomp = 0
+    verticeNo, condicao = self.existeNaoMarcado()
+    while condicao:
+      self.auxComponentes(verticeNo, ncomp)
+      ncomp += 1
+      verticeNo, condicao = self.existeNaoMarcado()
+    for verticeNo in self.estrutura:
+      print("Vertice {}: Componente {}".format(verticeNo.vertice.valor, verticeNo.vertice.ncomp))
+      verticeNo.vertice.marca = False
 
   def encontraPasseio(self, verticeInicial, verticeFinal, retorne=False):#5.5
     verticeNo = self.retornaNo(verticeInicial)
@@ -348,7 +375,6 @@ class GrafoEstrutura:
     print("Estrutura de Adjacência: ")
     for verticeNo in self.estrutura:
       auxElementNo = verticeNo
-      print(auxElementNo.vertice.valor)
       while auxElementNo.prox != None:
         print("No {} -> ".format(auxElementNo.vertice.valor), end="")
         auxElementNo = auxElementNo.prox
